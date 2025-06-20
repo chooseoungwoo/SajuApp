@@ -1,86 +1,22 @@
+
 body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background: url('background.jpg') no-repeat center center fixed;
+  font-family: 'Segoe UI', sans-serif;
+  background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0') no-repeat center center fixed;
   background-size: cover;
-  margin: 0;
-  padding: 0;
-  color: #222;
-}
-
-.container {
-  max-width: 700px;
-  margin: 60px auto;
-  background: rgba(255, 255, 255, 0.85);
-  padding: 40px 30px;
-  border-radius: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
-}
-
-h1 {
-  font-size: 2.2rem;
-  text-align: center;
-  color: #1e3a8a;
-  margin-bottom: 30px;
-}
-
-input[type="text"], input[type="time"] {
-  width: 100%;
-  padding: 14px;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  margin-bottom: 20px;
-  box-sizing: border-box;
-}
-
-#submit-btn {
-  width: 100%;
-  padding: 14px;
-  font-size: 1.1rem;
-  font-weight: bold;
   color: white;
-  background: linear-gradient(135deg, #4f46e5, #06b6d4);
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s ease;
+  text-align: center;
+  padding: 40px;
 }
-#submit-btn:hover {
-  background: linear-gradient(135deg, #06b6d4, #4f46e5);
-  transform: translateY(-2px);
+input {
+  margin: 5px;
+  padding: 6px;
+  border-radius: 5px;
 }
-
-.result-card {
-  margin-top: 30px;
-  padding: 25px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.95);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-  border-left: 8px solid #4f46e5;
-  animation: fadeIn 0.4s ease;
-}
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.section-title {
-  font-size: 1.3rem;
+button {
+  padding: 10px 20px;
+  margin-top: 10px;
   font-weight: bold;
-  border-bottom: 2px dashed #c7d2fe;
-  padding-bottom: 6px;
-  margin-bottom: 15px;
-  color: #4338ca;
 }
-
-.element-list {
-  list-style: none;
-  padding-left: 0;
-  font-size: 1rem;
-}
-
-.element-list li {
-  margin-bottom: 8px;
+canvas {
+  margin-top: 30px;
 }

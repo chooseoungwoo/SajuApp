@@ -1,41 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>사주 통합 분석</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <title>정통 사주풀이</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
-    <h1>🔮 사주 통합 분석</h1>
-    <label for="birthdate">생년월일 입력 (yyyyMMdd):</label>
-    <input type="text" id="birthdate" placeholder="예: 19850209">
-    <label for="birthtime">출생 시각 입력 (HH:mm):</label>
-    <input type="time" id="birthtime">
-    <button id="submit-btn">사주 보기</button>
-
-    <div id="result" class="result-card" style="display:none;">
-      <div>
-        <div class="section-title">📌 사주팔자 (정통 계산 기반)</div>
-        <p><strong>연주 (년):</strong> 기묘</p>
-        <p><strong>월주 (월):</strong> 을묘</p>
-        <p><strong>일주 (일):</strong> 계사</p>
-        <p><strong>시주 (시):</strong> 임술</p>
-      </div>
-      <div>
-        <div class="section-title">🌿 오행 구성</div>
-        <ul class="element-list">
-          <li>🌳 목: 3개</li>
-          <li>🔥 화: 1개</li>
-          <li>🪨 토: 2개</li>
-          <li>⚔️ 금: 0개</li>
-          <li>💧 수: 2개</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <h1>정통 사주 통합 분석</h1>
+  <form id="saju-form">
+    <label>출생연도: <input type="number" id="year" required></label><br>
+    <label>출생월: <input type="number" id="month" required></label><br>
+    <label>출생일: <input type="number" id="day" required></label><br>
+    <label>출생시 (0~23): <input type="number" id="hour" required></label><br>
+    <button type="submit">사주 보기</button>
+  </form>
+  <div id="result" style="margin-top:20px;"></div>
+  <canvas id="fortuneGraph" width="400" height="200"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
