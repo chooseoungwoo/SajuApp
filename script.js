@@ -36,17 +36,25 @@ document.addEventListener('DOMContentLoaded', () => {
     count[elements[dayStem]]++;
     count[elements[gan[(adjustedYear + hourIndex) % 10]]]++;
 
-    let chartHTML = "<div class='card'><h3>사주팔자 (간지 기준)</h3>";
-    chartHTML += "<p><strong>연주:</strong> " + yearGanji + "</p>";
-    chartHTML += "<p><strong>시주:</strong> " + hourGanji + "</p>";
-    chartHTML += "<p><strong>일간:</strong> " + dayStem + " (" + elements[dayStem] + "오행)</p></div>";
+    let resultHTML = `
+      <div class="card">
+        <h3>📌 사주팔자 (간지 기준)</h3>
+        <p><strong>연주:</strong> ${yearGanji}</p>
+        <p><strong>시주:</strong> ${hourGanji}</p>
+        <p><strong>일간:</strong> ${dayStem} (${elements[dayStem]}오행)</p>
+      </div>
+      <div class="card">
+        <h3>🌿 오행 구성</h3>
+        <ul>
+          <li>목: ${count['목']}개</li>
+          <li>화: ${count['화']}개</li>
+          <li>토: ${count['토']}개</li>
+          <li>금: ${count['금']}개</li>
+          <li>수: ${count['수']}개</li>
+        </ul>
+      </div>
+    `;
 
-    chartHTML += "<div class='card'><h3>🌿 오행 구성</h3><ul>";
-    for (const key in count) {
-      chartHTML += "<li>" + key + ": " + count[key] + "개</li>";
-    }
-    chartHTML += "</ul></div>";
-
-    resultDiv.innerHTML = chartHTML;
+    resultDiv.innerHTML = resultHTML;
   });
 });
