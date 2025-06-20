@@ -1,6 +1,7 @@
 body {
   font-family: 'Noto Sans KR', sans-serif;
-  background: linear-gradient(135deg, #dbeafe, #e0f2fe, #f0fdf4);
+  background: url('background.jpg') no-repeat center center fixed;
+  background-size: cover;
   margin: 0;
   padding: 0;
   color: #222;
