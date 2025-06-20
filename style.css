@@ -1,6 +1,4 @@
 /* 스타일 리디자인 - SajuApp */
-
-/* 전체 폰트 */
 body {
   font-family: 'Noto Sans KR', sans-serif;
   background-color: #f5f7fa;
@@ -8,20 +6,17 @@ body {
   margin: 0;
   padding: 0;
 }
-
 .container {
   max-width: 700px;
   margin: 0 auto;
   padding: 40px 20px;
 }
-
 h1 {
   font-size: 2rem;
   color: #222;
   margin-bottom: 30px;
   text-align: center;
 }
-
 input[type="text"],
 input[type="time"],
 select {
@@ -33,7 +28,6 @@ select {
   font-size: 1rem;
   box-sizing: border-box;
 }
-
 #submit-btn {
   background: linear-gradient(90deg, #007bff, #00c6ff);
   color: white;
@@ -45,11 +39,9 @@ select {
   cursor: pointer;
   transition: transform 0.2s ease;
 }
-
 #submit-btn:hover {
   transform: scale(1.03);
 }
-
 .result-card {
   background: #fff;
   border-radius: 20px;
@@ -57,7 +49,6 @@ select {
   padding: 25px;
   margin-top: 30px;
 }
-
 .section-title {
   font-size: 1.3rem;
   font-weight: bold;
@@ -66,38 +57,31 @@ select {
   margin-bottom: 15px;
   color: #007bff;
 }
-
 .element-list {
   list-style: none;
   padding: 0;
 }
-
 .element-list li {
   margin-bottom: 8px;
   font-size: 1rem;
   padding-left: 1.5rem;
   position: relative;
 }
-
 .element-list li::before {
   content: "🌱";
   position: absolute;
   left: 0;
 }
-
 @media screen and (max-width: 768px) {
   .container {
     padding: 20px;
   }
-
   h1 {
     font-size: 1.5rem;
   }
-
   .section-title {
     font-size: 1.1rem;
   }
-
   #submit-btn {
     font-size: 1rem;
   }
