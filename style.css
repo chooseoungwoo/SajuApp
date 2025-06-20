@@ -1,33 +1,104 @@
+/* 스타일 리디자인 - SajuApp */
 
+/* 전체 폰트 */
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f4f4f4;
-  padding: 20px;
+  font-family: 'Noto Sans KR', sans-serif;
+  background-color: #f5f7fa;
+  color: #222;
   margin: 0;
+  padding: 0;
 }
+
 .container {
-  max-width: 720px;
+  max-width: 700px;
   margin: 0 auto;
-  background-color: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+  padding: 40px 20px;
 }
-input, button {
-  padding: 8px;
-  margin: 10px 0;
+
+h1 {
+  font-size: 2rem;
+  color: #222;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+input[type="text"],
+input[type="time"],
+select {
   width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1rem;
   box-sizing: border-box;
 }
-button {
-  background-color: #007bff;
+
+#submit-btn {
+  background: linear-gradient(90deg, #007bff, #00c6ff);
   color: white;
   border: none;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1.2rem;
+  width: 100%;
   cursor: pointer;
+  transition: transform 0.2s ease;
 }
-.card {
-  background-color: #f9f9f9;
+
+#submit-btn:hover {
+  transform: scale(1.03);
+}
+
+.result-card {
+  background: #fff;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 25px;
+  margin-top: 30px;
+}
+
+.section-title {
+  font-size: 1.3rem;
+  font-weight: bold;
   border-left: 6px solid #007bff;
-  padding: 16px;
-  margin-top: 20px;
+  padding-left: 12px;
+  margin-bottom: 15px;
+  color: #007bff;
+}
+
+.element-list {
+  list-style: none;
+  padding: 0;
+}
+
+.element-list li {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.element-list li::before {
+  content: "🌱";
+  position: absolute;
+  left: 0;
+}
+
+@media screen and (max-width: 768px) {
+  .container {
+    padding: 20px;
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+  }
+
+  #submit-btn {
+    font-size: 1rem;
+  }
 }
