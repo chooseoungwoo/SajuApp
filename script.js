@@ -1,3 +1,4 @@
+
 window.addEventListener('DOMContentLoaded', () => {
     // 상대방 생일 입력창 자동 추가
     const inputGroup = document.querySelector('.input-group');
@@ -68,8 +69,8 @@ function getPersonality(dayStem) {
 function getCompatibility(day1, day2) {
     const goodPairs = ['갑을','을갑','병정','정병','무기','기무','경신','신경','임계','계임'];
     const badPairs = ['갑경','을신','병임','정계','무갑','기을','경병','신정','임무','계기'];
-
     const pair = day1 + day2;
+
     if (goodPairs.includes(pair)) return 85;
     if (badPairs.includes(pair)) return 45;
     return 60; // 보통
