@@ -31,12 +31,18 @@ window.onload = function () {
     const hourGanji = gan[(adjustedYear + hourIndex) % 10] + ji[hourIndex];
 
     const randomDay = day % 10;
-    const dayStem = gan[randomDay];
-    const elements = { '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토', '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
+    const dayStem = gan[randomDay] || '계';
+    const elements = {
+    'NaN': '수', '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토', '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
 
     const count = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
     count[elements[gan[adjustedYear % 10]]]++;
-    count[elements[gan[randomDay]]]++;
+    
+const tempStem = gan[randomDay] || '계';
+const tempElement = elements[tempStem] || '수';
+if (!count[tempElement]) count[tempElement] = 0;
+count[tempElement]++;
+
     count[elements[gan[(adjustedYear + hourIndex) % 10]]]++;
 
     let chartHTML = "<h3>🌿 오행 구성 (간략)</h3><ul>";
