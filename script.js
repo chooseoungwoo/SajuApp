@@ -12,7 +12,7 @@ function getSolarDateNumber(year, month, day) {
   return diffDays;
 }
 
-// Rough solar terms (24절기) cutoff dates for 월주 보정
+// 절기 보정된 월주 계산
 const SOLAR_TERM_CUTOFF = [
   [2, 4], [3, 6], [4, 5], [5, 6], [6, 6], [7, 7],
   [8, 8], [9, 8], [10, 8], [11, 7], [12, 7], [1, 6]
@@ -22,11 +22,9 @@ function getMonthGanjiBySolarTerm(year, month, day, yearStem) {
   const stems = ['갑','을','병','정','무','기','경','신','임','계'];
   const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
 
-  // Find offset from Tiger month (In-moon, 정월) which always starts with 병인
   const yearStemIndex = stems.indexOf(yearStem);
-  const monthStemStartIndex = (yearStemIndex * 2 + 2) % 10; // standard rule
+  const monthStemStartIndex = (yearStemIndex * 2 + 2) % 10;
 
-  // Adjust month based on 절입일
   let adjustedMonth = month;
   const cutoff = SOLAR_TERM_CUTOFF[month - 1];
   if (day < cutoff[1]) {
@@ -34,7 +32,7 @@ function getMonthGanjiBySolarTerm(year, month, day, yearStem) {
     if (adjustedMonth === 0) adjustedMonth = 12;
   }
 
-  const monthBranch = branches[(adjustedMonth + 1) % 12]; // 정월 = 인
+  const monthBranch = branches[(adjustedMonth + 1) % 12];
   const monthStem = stems[(monthStemStartIndex + adjustedMonth - 1) % 10];
 
   return monthStem + monthBranch;
@@ -66,18 +64,31 @@ function getSajuPillars(year, month, day, hour, minute) {
   };
 }
 
+// 정확한 시주 계산
 function getHourPillarByTime(dayStem, hour, minute) {
-  const earthlyBranches = ['자', '축', '인', '묯', '진', '사', '오', '미', '신', '유', '술', '해'];
-  const timeIndex = Math.floor((hour * 60 + minute) / 120) % 12;
-  const hourBranch = earthlyBranches[timeIndex];
-  const stemIndexByDayStem = {
+  const stems = ['갑','을','병','정','무','기','경','신','임','계'];
+  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+
+  const dayStemIndexTable = {
     '갑': 0, '을': 2, '병': 4, '정': 6, '무': 8,
     '기': 0, '경': 2, '신': 4, '임': 6, '계': 8
   };
-  const heavenlyStems = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계'];
-  const baseIndex = stemIndexByDayStem[dayStem];
-  const hourStem = heavenlyStems[(baseIndex + timeIndex) % 10];
-  return `${hourStem}${hourBranch}`;
+
+  const timeRanges = [
+    [23, 0], [1, 2], [3, 4], [5, 6], [7, 8], [9, 10],
+    [11, 12], [13, 14], [15, 16], [17, 18], [19, 20], [21, 22]
+  ];
+
+  const hourIndex = timeRanges.findIndex(([start, end]) => {
+    const t = hour;
+    return t === start || (t >= start && t < end);
+  });
+
+  const branch = branches[hourIndex];
+  const stemOffset = (dayStemIndexTable[dayStem] + hourIndex) % 10;
+  const stem = stems[stemOffset];
+
+  return stem + branch;
 }
 
 document.getElementById('saju-form').addEventListener('submit', function (e) {
