@@ -1,90 +1,24 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>사주 통합 분석</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #f4f4f4;
-      padding: 20px;
-      margin: 0;
-    }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
-    h1 {
-      text-align: center;
-      color: #111;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    input[type="text"],
-    input[type="time"] {
-      width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-    button {
-      width: 100%;
-      padding: 12px;
-      background-color: #007bff;
-      color: white;
-      font-size: 16px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .card {
-      background: #fff;
-      border: 1px solid #ddd;
-      border-radius: 6px;
-      padding: 15px;
-      margin-top: 20px;
-    }
-    .note {
-      font-size: 12px;
-      color: gray;
-    }
-    canvas {
-      margin-top: 20px;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>사주 통합 분석</h1>
-
-    <label for="birthDate">생년월일 입력 (yyyyMMdd):</label>
-    <input type="text" id="birthDate" placeholder="예: 19850209">
-
-    <label for="birthTime">출생 시각 입력 (HH:mm):</label>
-    <input type="time" id="birthTime">
-
+    <label>생년월일 입력 (yyyyMMdd):</label>
+    <input type="text" id="birthDate" placeholder="예: 19850209" />
+    <label>출생 시각 입력 (HH:mm):</label>
+    <input type="time" id="birthTime" />
     <button id="submitBtn">사주 보기</button>
-
     <div id="result"></div>
-
-    <div class="card">
-      <h3>🌀 60년 육십갑자 주기 시각화</h3>
-      <canvas id="sixtyYearCycleChart" height="200"></canvas>
-    </div>
+    <canvas id="sixtyYearCycleChart" height="100"></canvas>
   </div>
-
-  <!-- ✅ Chart.js CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <!-- ✅ 본인의 script.js 파일 -->
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
