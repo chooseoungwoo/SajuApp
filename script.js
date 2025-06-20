@@ -7,11 +7,11 @@ function getMonthlyLuckTexts(scores) {
     return '운이 저조합니다. 최대한 무리하지 마세요.';
   });
 
-  let html = "<div class='card'><h3>🗓️ 2025년 월별 운세 해석</h3><ul>";
+  let html = "`<div class='card'><h3>🗓️ 2025년 월별 운세 해석</h3>`<ul>`";
   for (let i = 0; i < comments.length; i++) {
-    html += `<li><strong>${i+1}월:</strong> ${comments[i]}</li>`;
+    html += ``<li>`<strong>${i+1}월:</strong> ${comments[i]}</li>``;
   }
-  html += "</ul></div>";
+  html += "</ul>`</div>`";
   return html;
 }
 
@@ -32,7 +32,7 @@ window.onload = function () {
     }
 
     if (!birthTime) {
-      resultDiv.innerHTML = "<p style='color:red;'>⚠️ 시가 없이 사주는 존재할 수 없습니다. 그런 사이트는 믿지 마세요.</p>";
+      resultDiv.innerHTML = "<p style='color:red;'>⚠️ 시가 없이 사주는 존재할 수 없습니다. 그런 사이트는 믿지 마세요.</p>`";
       return;
     }
 
@@ -73,25 +73,25 @@ count[tempElement]++;
 
     count[elements[gan[(adjustedYear + hourIndex) % 10]]]++;
 
-    let chartHTML = "<h3>🌿 오행 구성 (간략)</h3><ul>";
+    let chartHTML = "<h3>🌿 오행 구성 (간략)</h3>`<ul>`";
     for (const key in count) {
-      chartHTML += `<li>${key}: ${count[key]}개</li>`;
+      chartHTML += ``<li>`${key}: ${count[key]}개</li>``;
     }
-    chartHTML += "</ul>";
+    chartHTML += "</ul>`";
 
     resultDiv.innerHTML = `
-      <div class="card">
+      `<div class="card">
         <h3>📌 사주팔자 (간지 기준)</h3>
-        <p><strong>연주:</strong> ${yearGanji}</p>
-<p><strong>월지:</strong> ${getMonthBranch(birthDate)}</p>
-        <p><strong>시주:</strong> ${getHourBranch(hour)}</p>
-        <p><strong>일주:</strong> ${dayGanji} (${stemElements[dayStem]}오행)</p>
-      </div>
+        <p><strong>연주:</strong> ${yearGanji}</p>`
+<p><strong>월지:</strong> ${getMonthBranch(birthDate)}</p>`
+        <p><strong>시주:</strong> ${getHourBranch(hour)}</p>`
+        <p><strong>일주:</strong> ${dayGanji} (${stemElements[dayStem]}오행)</p>`
+      </div>`
       ${chartHTML} + (function(){
 const info = getPersonalityDetails(dayStem);
-return `<div class='card'><h3>🧠 성격 분석</h3>` +
-`<p><strong>장점:</strong> ${info.strength}</p>` +
-`<p><strong>단점:</strong> ${info.weakness}</p></div>`;
+return ``<div class='card'><h3>🧠 성격 분석</h3>` +
+`<p><strong>장점:</strong> ${info.strength}</p>`` +
+`<p><strong>단점:</strong> ${info.weakness}</p>`</div>``;
 })() + getSajuSummary(count, dayStem)
     `;
 
@@ -276,11 +276,11 @@ function getSajuSummary(count, dayStem) {
   const char = traits[dayStem] || '성향 정보 부족';
 
   return `
-    <div class='card'>
+    `<div class='card'>
       <h3>🔍 사주 총평</h3>
-      <p>${balance}</p>
-      <p>일간(${dayStem}) 기준으로 ${char}</p>
-    </div>
+      <p>${balance}</p>`
+      <p>일간(${dayStem}) 기준으로 ${char}</p>`
+    </div>`
   `;
 }
 
@@ -346,7 +346,7 @@ window.onload = function () {
     }
 
     if (!birthTime) {
-      resultDiv.innerHTML = "<p style='color:red;'>⚠️ 시가 없이 사주는 존재할 수 없습니다. 그런 사이트는 믿지 마세요.</p>";
+      resultDiv.innerHTML = "<p style='color:red;'>⚠️ 시가 없이 사주는 존재할 수 없습니다. 그런 사이트는 믿지 마세요.</p>`";
       return;
     }
 
@@ -381,25 +381,25 @@ window.onload = function () {
     count[tempElement]++;
     count[elements[gan[(adjustedYear + hourIndex) % 10]]]++;
 
-    let chartHTML = "<h3>🌿 오행 구성 (간략)</h3><ul>";
+    let chartHTML = "<h3>🌿 오행 구성 (간략)</h3>`<ul>`";
     for (const key in count) {
-      chartHTML += `<li>${key}: ${count[key]}개</li>`;
+      chartHTML += ``<li>`${key}: ${count[key]}개</li>``;
     }
-    chartHTML += "</ul>";
+    chartHTML += "</ul>`";
 
     resultDiv.innerHTML = `
-      <div class="card">
+      `<div class="card">
         <h3>📌 사주팔자 (간지 기준)</h3>
-        <p><strong>연주:</strong> ${yearGanji}</p>
-<p><strong>월지:</strong> ${getMonthBranch(birthDate)}</p>
-        <p><strong>시주:</strong> ${getHourBranch(hour)}</p>
-        <p><strong>일주:</strong> ${dayGanji} (${stemElements[dayStem]}오행)</p>
-      </div>
+        <p><strong>연주:</strong> ${yearGanji}</p>`
+<p><strong>월지:</strong> ${getMonthBranch(birthDate)}</p>`
+        <p><strong>시주:</strong> ${getHourBranch(hour)}</p>`
+        <p><strong>일주:</strong> ${dayGanji} (${stemElements[dayStem]}오행)</p>`
+      </div>`
       ${chartHTML} + (function(){
 const info = getPersonalityDetails(dayStem);
-return `<div class='card'><h3>🧠 성격 분석</h3>` +
-`<p><strong>장점:</strong> ${info.strength}</p>` +
-`<p><strong>단점:</strong> ${info.weakness}</p></div>`;
+return ``<div class='card'><h3>🧠 성격 분석</h3>` +
+`<p><strong>장점:</strong> ${info.strength}</p>`` +
+`<p><strong>단점:</strong> ${info.weakness}</p>`</div>``;
 })() + getSajuSummary(count, dayStem)
     `;
 
