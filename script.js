@@ -1,3 +1,22 @@
+function getMonthlyLuckTexts(scores) {
+  const comments = scores.map(score => {
+    if (score >= 85) return '최고의 운이 들어오는 시기입니다. 중요한 결정을 해보세요.';
+    if (score >= 70) return '운이 상승하는 시기로 안정적인 흐름입니다.';
+    if (score >= 55) return '무난한 흐름이며 조심하면 문제 없습니다.';
+    if (score >= 40) return '변동이 많고 주의가 필요한 시기입니다.';
+    return '운이 저조합니다. 최대한 무리하지 마세요.';
+  });
+
+  let html = "<div class='card'><h3>🗓️ 2025년 월별 운세 해석</h3><ul>";
+  for (let i = 0; i < comments.length; i++) {
+    html += `<li><strong>${i+1}월:</strong> ${comments[i]}</li>`;
+  }
+  html += "</ul></div>";
+  return html;
+}
+
+
+
 window.onload = function () {
   document.getElementById('submitBtn').addEventListener('click', function () {
     const birthDate = document.getElementById('birthDate').value.trim();
@@ -32,7 +51,15 @@ window.onload = function () {
 
     const randomDay = day % 10;
     const dayGanji = getGapjaFromDate(birthDate);
+    
     const dayStem = dayGanji[0] || '계';
+    const dayBranch = dayGanji[1] || '해';
+    const stemElements = { '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토',
+                           '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
+    count[stemElements[gan[adjustedYear % 10]]]++; // 연간
+    count[stemElements[dayStem]]++;                // 일간
+    count[stemElements[gan[(adjustedYear + hour) % 10]]]++; // 시간 추정
+    
     const elements = {
     'NaN': '수', '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토', '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
 
@@ -58,7 +85,7 @@ count[tempElement]++;
         <p><strong>연주:</strong> ${yearGanji}</p>
 <p><strong>월지:</strong> ${getMonthBranch(birthDate)}</p>
         <p><strong>시주:</strong> ${getHourBranch(hour)}</p>
-        <p><strong>일주:</strong> ${dayGanji} (${elements[dayStem]}오행)</p>
+        <p><strong>일주:</strong> ${dayGanji} (${stemElements[dayStem]}오행)</p>
       </div>
       ${chartHTML} + (function(){
 const info = getPersonalityDetails(dayStem);
@@ -336,7 +363,15 @@ window.onload = function () {
     const hourGanji = gan[(adjustedYear + hourIndex) % 10] + ji[hourIndex];
     const randomDay = day % 10;
     const dayGanji = getGapjaFromDate(birthDate);
+    
     const dayStem = dayGanji[0] || '계';
+    const dayBranch = dayGanji[1] || '해';
+    const stemElements = { '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토',
+                           '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
+    count[stemElements[gan[adjustedYear % 10]]]++; // 연간
+    count[stemElements[dayStem]]++;                // 일간
+    count[stemElements[gan[(adjustedYear + hour) % 10]]]++; // 시간 추정
+    
     const elements = { 'NaN': '수', '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토', '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
     const count = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
     count[elements[gan[adjustedYear % 10]]]++;
@@ -358,7 +393,7 @@ window.onload = function () {
         <p><strong>연주:</strong> ${yearGanji}</p>
 <p><strong>월지:</strong> ${getMonthBranch(birthDate)}</p>
         <p><strong>시주:</strong> ${getHourBranch(hour)}</p>
-        <p><strong>일주:</strong> ${dayGanji} (${elements[dayStem]}오행)</p>
+        <p><strong>일주:</strong> ${dayGanji} (${stemElements[dayStem]}오행)</p>
       </div>
       ${chartHTML} + (function(){
 const info = getPersonalityDetails(dayStem);
