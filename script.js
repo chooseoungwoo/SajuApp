@@ -60,7 +60,12 @@ count[tempElement]++;
         <p><strong>시주:</strong> ${getHourBranch(hour)}</p>
         <p><strong>일주:</strong> ${dayGanji} (${elements[dayStem]}오행)</p>
       </div>
-      ${chartHTML}
+      ${chartHTML} + (function(){
+const info = getPersonalityDetails(dayStem);
+return `<div class='card'><h3>🧠 성격 분석</h3>` +
+`<p><strong>장점:</strong> ${info.strength}</p>` +
+`<p><strong>단점:</strong> ${info.weakness}</p></div>`;
+})() + getSajuSummary(count, dayStem)
     `;
 
     chartEl.style.display = 'block';
@@ -141,19 +146,135 @@ function getHourBranch(hour) {
 }
 
 
+
+function getDaewoonStartAge(birthDate) {
+  const y = parseInt(birthDate.slice(0,4));
+  const m = parseInt(birthDate.slice(4,6));
+  const d = parseInt(birthDate.slice(6,8));
+  const birth = new Date(y, m-1, d);
+
+  const solarTerms = [
+    new Date(y, 1, 4), new Date(y, 2, 6), new Date(y, 3, 5),
+    new Date(y, 4, 6), new Date(y, 5, 6), new Date(y, 6, 7),
+    new Date(y, 7, 8), new Date(y, 8, 8), new Date(y, 9, 8),
+    new Date(y,10,7), new Date(y,11,7), new Date(y+1, 0, 6)  // 다음해 1월
+  ];
+
+  let nextTerm = null;
+  for (let i = 0; i < solarTerms.length; i++) {
+    if (solarTerms[i] > birth) {
+      nextTerm = solarTerms[i];
+      break;
+    }
+  }
+
+  if (!nextTerm) nextTerm = new Date(y+1, 0, 6); // fallback
+
+  const diffDays = Math.floor((nextTerm - birth) / (1000 * 60 * 60 * 24));
+  const age = Math.floor(diffDays / 3);
+  return age;
+}
+
+
+
+function getPersonalityDetails(dayStem) {
+  const traits = {
+    '갑': {
+      strength: '진취적이고 책임감이 강함. 끈기 있는 리더형.',
+      weakness: '고집이 세고 독선적일 수 있음.'
+    },
+    '을': {
+      strength: '유연하고 섬세함. 주변과 잘 어울림.',
+      weakness: '우유부단하고 감정 기복이 있음.'
+    },
+    '병': {
+      strength: '열정적이고 활발함. 추진력이 강함.',
+      weakness: '무모하게 앞서가거나 과격할 수 있음.'
+    },
+    '정': {
+      strength: '예술적 감성 풍부. 이타적이고 정이 많음.',
+      weakness: '현실 감각 부족. 감정에 치우침.'
+    },
+    '무': {
+      strength: '신뢰감 있고 실리적. 중심 잡힌 성격.',
+      weakness: '융통성 부족. 고지식함.'
+    },
+    '기': {
+      strength: '공감력과 배려심. 안정적 성향.',
+      weakness: '의존적이거나 망설임이 많음.'
+    },
+    '경': {
+      strength: '분석력 뛰어나고 목표지향적.',
+      weakness: '냉철하고 표현이 부족할 수 있음.'
+    },
+    '신': {
+      strength: '창의적이고 유쾌함. 빠른 두뇌 회전.',
+      weakness: '산만하고 일관성 부족.'
+    },
+    '임': {
+      strength: '직관력과 통찰력. 깊은 감성.',
+      weakness: '내향적이고 쉽게 우울해짐.'
+    },
+    '계': {
+      strength: '지혜롭고 조용한 카리스마.',
+      weakness: '소심하거나 의심이 많을 수 있음.'
+    }
+  };
+  return traits[dayStem] || {strength: '정보 없음', weakness: '정보 없음'};
+}
+
+
+
+function getSajuSummary(count, dayStem) {
+  const five = ['목','화','토','금','수'];
+  const total = five.map(e => count[e]);
+  const max = Math.max(...total);
+  const min = Math.min(...total);
+  let balance = '오행이 비교적 균형 잡혀 있습니다.';
+  if (max - min >= 3) balance = '오행이 매우 불균형하여 특정 성향이 강하게 나타납니다.';
+  else if (max - min == 2) balance = '한쪽 오행이 조금 강한 편입니다.';
+
+  const traits = {
+    '갑': '개척적이고 뚝심 있는 성향입니다.',
+    '을': '부드럽고 융통성 있는 성향입니다.',
+    '병': '활발하고 열정적인 에너지가 강합니다.',
+    '정': '섬세하고 감성적인 성격을 가지고 있습니다.',
+    '무': '실용적이고 책임감 있는 타입입니다.',
+    '기': '조화롭고 타인을 배려하는 성향입니다.',
+    '경': '의지가 강하고 목표지향적인 타입입니다.',
+    '신': '자유롭고 창의적인 사고를 중시합니다.',
+    '임': '직관력과 통찰력이 뛰어난 성향입니다.',
+    '계': '조용하지만 날카로운 판단력이 있습니다.'
+  };
+  const char = traits[dayStem] || '성향 정보 부족';
+
+  return `
+    <div class='card'>
+      <h3>🔍 사주 총평</h3>
+      <p>${balance}</p>
+      <p>일간(${dayStem}) 기준으로 ${char}</p>
+    </div>
+  `;
+}
+
+
 function renderMonthlyLuckChart() {
   const ctx = document.getElementById('luckChart2').getContext('2d');
   if (window.monthChart instanceof Chart) window.monthChart.destroy();
 
   const months = ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'];
-  const scores = [55, 58, 62, 67, 70, 65, 60, 63, 66, 72, 75, 78]; // 예시 점수
+  
+  const baseAge = getDaewoonStartAge(birthDate);
+  const scores = Array.from({length:8}, (_,i)=> Math.floor(50 + 30*Math.sin(i*0.6) + i*2));
+  const ages = Array.from({length:8}, (_,i)=> baseAge + i*10);
+ // 예시 점수
 
   window.monthChart = new Chart(ctx, {
     type: 'line',
     data: {
-      labels: months,
+      labels: ages.map(a => a + '세'),
       datasets: [{
-        label: '2025년 월별 운세 점수',
+        label: '대운 점수 (정통 계산)',
         data: scores,
         backgroundColor: 'rgba(40,167,69,0.2)',
         borderColor: 'rgba(40,167,69,1)',
@@ -239,7 +360,12 @@ window.onload = function () {
         <p><strong>시주:</strong> ${getHourBranch(hour)}</p>
         <p><strong>일주:</strong> ${dayGanji} (${elements[dayStem]}오행)</p>
       </div>
-      ${chartHTML}
+      ${chartHTML} + (function(){
+const info = getPersonalityDetails(dayStem);
+return `<div class='card'><h3>🧠 성격 분석</h3>` +
+`<p><strong>장점:</strong> ${info.strength}</p>` +
+`<p><strong>단점:</strong> ${info.weakness}</p></div>`;
+})() + getSajuSummary(count, dayStem)
     `;
 
     renderLuckChart();
