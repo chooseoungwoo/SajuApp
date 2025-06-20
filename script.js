@@ -36,7 +36,7 @@ window.onload = function () {
 
     const count = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
     count[elements[gan[adjustedYear % 10]]]++;
-    count[elements[gan[randomDay]]++]++;
+    count[elements[gan[randomDay]]]++;
     count[elements[gan[(adjustedYear + hourIndex) % 10]]]++;
 
     let chartHTML = "<h3>🌿 오행 구성 (간략)</h3><ul>";
@@ -62,7 +62,7 @@ window.onload = function () {
 
 function renderLuckChart() {
   const ctx = document.getElementById('luckChart').getContext('2d');
-  if (window.luckChart) window.luckChart.destroy();
+  if (window.luckChart instanceof Chart) window.luckChart.destroy();
   window.luckChart = new Chart(ctx, {
     type: 'line',
     data: {
