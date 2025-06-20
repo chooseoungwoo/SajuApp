@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const formGroup = document.querySelector('.input-group');
+    const inputGroup = document.querySelector('.input-group');
 
     // 출생시각 필드 추가
     const timeGroup = document.createElement('div');
@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <label for="birthTime">출생 시각 입력 (HH:mm):</label>
         <input type="time" id="birthTime" required>
     \`;
-    formGroup.after(timeGroup);
+    inputGroup.after(timeGroup);
 });
 
 document.getElementById('submitBtn').addEventListener('click', function () {
@@ -32,7 +32,7 @@ document.getElementById('submitBtn').addEventListener('click', function () {
     const day = parseInt(birthDate.slice(6, 8));
     const hour = parseInt(birthTime.split(':')[0]);
 
-    // 입춘 기준 적용 (간단화 버전: 2월 4일 이전은 전년도 간지)
+    // 입춘 기준 적용
     const adjustedYear = (month < 2 || (month === 2 && day < 4)) ? year - 1 : year;
     const gan = ['갑','을','병','정','무','기','경','신','임','계'];
     const ji = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
@@ -41,7 +41,7 @@ document.getElementById('submitBtn').addEventListener('click', function () {
     const hourIndex = Math.floor((hour + 1) / 2) % 12;
     const hourGanji = gan[(adjustedYear + hourIndex) % 10] + ji[hourIndex];
 
-    const randomDay = day % 10; // 간략화된 일간 추정
+    const randomDay = day % 10;
     const dayStem = gan[randomDay];
     const elements = { '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토', '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
 
