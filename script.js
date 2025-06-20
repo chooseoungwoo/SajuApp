@@ -1,27 +1,85 @@
 
-// Define helper functions first
+function getGanjiIndexByNumber(n) {
+  const stems = ['갑','을','병','정','무','기','경','신','임','계'];
+  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+  return stems[n % 10] + branches[n % 12];
+}
+
+function getSolarDateNumber(year, month, day) {
+  const date = new Date(year, month - 1, day);
+  const base = new Date(1984, 1, 2); // 1984-02-02 = 갑자일
+  const diffDays = Math.floor((date - base) / (24 * 60 * 60 * 1000));
+  return diffDays;
+}
+
+// Rough solar terms (24절기) cutoff dates for 월주 보정
+const SOLAR_TERM_CUTOFF = [
+  [2, 4], [3, 6], [4, 5], [5, 6], [6, 6], [7, 7],
+  [8, 8], [9, 8], [10, 8], [11, 7], [12, 7], [1, 6]
+];
+
+function getMonthGanjiBySolarTerm(year, month, day, yearStem) {
+  const stems = ['갑','을','병','정','무','기','경','신','임','계'];
+  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+
+  // Find offset from Tiger month (In-moon, 정월) which always starts with 병인
+  const yearStemIndex = stems.indexOf(yearStem);
+  const monthStemStartIndex = (yearStemIndex * 2 + 2) % 10; // standard rule
+
+  // Adjust month based on 절입일
+  let adjustedMonth = month;
+  const cutoff = SOLAR_TERM_CUTOFF[month - 1];
+  if (day < cutoff[1]) {
+    adjustedMonth -= 1;
+    if (adjustedMonth === 0) adjustedMonth = 12;
+  }
+
+  const monthBranch = branches[(adjustedMonth + 1) % 12]; // 정월 = 인
+  const monthStem = stems[(monthStemStartIndex + adjustedMonth - 1) % 10];
+
+  return monthStem + monthBranch;
+}
+
 function getSajuPillars(year, month, day, hour, minute) {
+  const stems = ['갑','을','병','정','무','기','경','신','임','계'];
+  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+
+  const yearOffset = year - 1984;
+  const yearStem = stems[(0 + yearOffset) % 10];
+  const yearBranch = branches[(0 + yearOffset) % 12];
+  const yearGanji = yearStem + yearBranch;
+
+  const monthGanjiStr = getMonthGanjiBySolarTerm(year, month, day, yearStem);
+
+  const dayNumber = getSolarDateNumber(year, month, day);
+  const dayGanji = getGanjiIndexByNumber(dayNumber);
+  const dayStem = dayGanji[0];
+
   return {
-    year: "을축",
-    month: "병인",
-    day: "기묘",
-    dayStem: "기",
-    elementCount: [2, 1, 2, 2, 1], // 목, 화, 토, 금, 수
+    year: yearGanji,
+    month: monthGanjiStr,
+    day: dayGanji,
+    dayStem: dayStem,
+    elementCount: [2, 1, 2, 2, 1],
     personality: "침착하고 논리적인 성향을 가짐",
     summary: "총체적으로 안정된 운세이나 후반기 귀인 도움 예상"
   };
 }
 
 function getHourPillarByTime(dayStem, hour, minute) {
-  const hourIndex = Math.floor(((hour * 60) + minute) / 120) % 12;
-  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
-  const stems = ['갑','을','병','정','무','기','경','신','임','계'];
-  const baseIndex = stems.indexOf(dayStem);
-  const stem = stems[(baseIndex + hourIndex) % 10];
-  return `${stem}${branches[hourIndex]}`;
+  const earthlyBranches = ['자', '축', '인', '묯', '진', '사', '오', '미', '신', '유', '술', '해'];
+  const timeIndex = Math.floor((hour * 60 + minute) / 120) % 12;
+  const hourBranch = earthlyBranches[timeIndex];
+  const stemIndexByDayStem = {
+    '갑': 0, '을': 2, '병': 4, '정': 6, '무': 8,
+    '기': 0, '경': 2, '신': 4, '임': 6, '계': 8
+  };
+  const heavenlyStems = ['갑', '을', '병', '정', '무', '기', '경', '신', '임', '계'];
+  const baseIndex = stemIndexByDayStem[dayStem];
+  const hourStem = heavenlyStems[(baseIndex + timeIndex) % 10];
+  return `${hourStem}${hourBranch}`;
 }
 
-// Then define event listener
 document.getElementById('saju-form').addEventListener('submit', function (e) {
   e.preventDefault();
   const year = parseInt(document.getElementById('year').value);
