@@ -1,77 +1,72 @@
+document.addEventListener('DOMContentLoaded', () => {
+    const formGroup = document.querySelector('.input-group');
 
-window.addEventListener('DOMContentLoaded', () => {
-    // 상대방 생일 입력창 자동 추가
-    const inputGroup = document.querySelector('.input-group');
-    const partnerGroup = document.createElement('div');
-    partnerGroup.className = 'input-group';
-    partnerGroup.innerHTML = `
-        <label for="partnerDate">상대 생년월일 입력 (yyyyMMdd):</label>
-        <input type="text" id="partnerDate" placeholder="예: 19920123">
-    `;
-    inputGroup.after(partnerGroup);
+    // 출생시각 필드 추가
+    const timeGroup = document.createElement('div');
+    timeGroup.className = 'input-group';
+    timeGroup.innerHTML = \`
+        <label for="birthTime">출생 시각 입력 (HH:mm):</label>
+        <input type="time" id="birthTime" required>
+    \`;
+    formGroup.after(timeGroup);
 });
 
 document.getElementById('submitBtn').addEventListener('click', function () {
     const birthDate = document.getElementById('birthDate').value.trim();
-    const partnerDate = document.getElementById('partnerDate').value.trim();
+    const birthTime = document.getElementById('birthTime').value.trim();
     const resultDiv = document.getElementById('result');
     resultDiv.innerHTML = '';
 
     if (!/^\d{8}$/.test(birthDate)) {
-        alert("본인 생년월일을 yyyyMMdd 형식으로 입력해주세요.");
+        alert("생년월일을 yyyyMMdd 형식으로 입력해주세요.");
         return;
     }
 
-    const userInfo = getSajuInfo(birthDate);
-    let resultHTML = `<h2>🔮 [본인 사주 분석]</h2>`;
-    resultHTML += `<p><strong>출생 연도 간지:</strong> ${userInfo.ganji}</p>`;
-    resultHTML += `<p><strong>일간 성향:</strong> ${getPersonality(userInfo.day)}</p>`;
-
-    if (/^\d{8}$/.test(partnerDate)) {
-        const partnerInfo = getSajuInfo(partnerDate);
-        const score = getCompatibility(userInfo.day, partnerInfo.day);
-
-        resultHTML += `<hr><h2>❤️ [궁합 분석]</h2>`;
-        resultHTML += `<p><strong>상대 간지:</strong> ${partnerInfo.ganji}</p>`;
-        resultHTML += `<p><strong>궁합 점수:</strong> ${score}점 / 100</p>`;
-        resultHTML += `<p><strong>상대 성향:</strong> ${getPersonality(partnerInfo.day)}</p>`;
+    if (!birthTime) {
+        resultDiv.innerHTML = "<p style='color:red;'>⚠️ 시가 없이 사주는 존재할 수 없습니다. 그런 사이트는 믿지 마세요.</p>";
+        return;
     }
 
-    resultDiv.innerHTML = resultHTML;
-});
+    const year = parseInt(birthDate.slice(0, 4));
+    const month = parseInt(birthDate.slice(4, 6));
+    const day = parseInt(birthDate.slice(6, 8));
+    const hour = parseInt(birthTime.split(':')[0]);
 
-function getSajuInfo(yyyymmdd) {
-    const year = parseInt(yyyymmdd.slice(0, 4));
-    const day = parseInt(yyyymmdd.slice(6, 8));
+    // 입춘 기준 적용 (간단화 버전: 2월 4일 이전은 전년도 간지)
+    const adjustedYear = (month < 2 || (month === 2 && day < 4)) ? year - 1 : year;
     const gan = ['갑','을','병','정','무','기','경','신','임','계'];
     const ji = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
-    const ganji = gan[year % 10] + ji[year % 12];
-    const dayStem = gan[day % 10];  // 단순히 '일간'으로 사용
-    return { year, ganji, day: dayStem };
-}
+    const yearGanji = gan[adjustedYear % 10] + ji[adjustedYear % 12];
 
-function getPersonality(dayStem) {
-    const traits = {
-        '갑': '진취적이고 외향적. 리더 기질.',
-        '을': '섬세하고 배려심 깊음. 다정다감.',
-        '병': '자신감 있고 열정적. 자존심 강함.',
-        '정': '지적이고 감성적. 예술적 재능.',
-        '무': '신중하고 실리적. 책임감 강함.',
-        '기': '감성적이고 공감력 높음. 중재자.',
-        '경': '냉철하고 전략적. 추진력 있음.',
-        '신': '변화추구형. 유연하고 재치 있음.',
-        '임': '이성적이고 분석적. 계획형.',
-        '계': '내성적이지만 깊이 있는 사고력.'
-    };
-    return traits[dayStem] || '불명확';
-}
+    const hourIndex = Math.floor((hour + 1) / 2) % 12;
+    const hourGanji = gan[(adjustedYear + hourIndex) % 10] + ji[hourIndex];
 
-function getCompatibility(day1, day2) {
-    const goodPairs = ['갑을','을갑','병정','정병','무기','기무','경신','신경','임계','계임'];
-    const badPairs = ['갑경','을신','병임','정계','무갑','기을','경병','신정','임무','계기'];
-    const pair = day1 + day2;
+    const randomDay = day % 10; // 간략화된 일간 추정
+    const dayStem = gan[randomDay];
+    const elements = { '갑': '목', '을': '목', '병': '화', '정': '화', '무': '토', '기': '토', '경': '금', '신': '금', '임': '수', '계': '수' };
 
-    if (goodPairs.includes(pair)) return 85;
-    if (badPairs.includes(pair)) return 45;
-    return 60; // 보통
-}
+    const count = { 목: 0, 화: 0, 토: 0, 금: 0, 수: 0 };
+    count[elements[gan[adjustedYear % 10]]]++;
+    count[elements[gan[randomDay]]]++;
+    count[elements[gan[(adjustedYear + hourIndex) % 10]]]++;
+
+    let chartHTML = "<h3>🌿 오행 구성 (간략)</h3><ul>";
+    for (const key in count) {
+        chartHTML += \`<li>\${key}: \${count[key]}개</li>\`;
+    }
+    chartHTML += "</ul>";
+
+    resultDiv.innerHTML = \`
+        <div class="card">
+            <h3>📌 사주팔자 (간지 기준)</h3>
+            <p><strong>연주:</strong> \${yearGanji}</p>
+            <p><strong>시주:</strong> \${hourGanji}</p>
+            <p><strong>일간:</strong> \${dayStem} (\${elements[dayStem]}오행)</p>
+        </div>
+        \${chartHTML}
+        <div class="card">
+            <h3>📈 60년 대운 시각화 (예정)</h3>
+            <p style='color:gray;'>※ 이 부분은 다음 단계에서 그래프 포함 예정</p>
+        </div>
+    \`;
+});
