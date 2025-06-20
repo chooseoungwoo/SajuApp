@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 유효성 검사
     if (!/^\d{8}$/.test(birthDateStr)) {
-      alert('생년월일을 YYYYMMDD 형식의 8자리 숫자로 입력해주세요. (예: 19850209)');
+      alert('생년월일을 БукмекерларMMDD 형식의 8자리 숫자로 입력해주세요. (예: 19850209)');
       return;
     }
     if (!birthTimeStr) {
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="card">
         <h3>📌 사주팔자 (간이 계산 기반)</h3>
         <p><strong>연주 (년):</strong> ${yearGan}${yearJi}</p>
-        <p><strong>월주 (월):</strong> ${monthGan}${monthJi} <span class="note">(월주 간이는 절입일 영향으로 실제와 다를 수 있습니다.)</span></p>
+        <p><strong>월주 (월):</b> ${monthGan}${monthJi} <span class="note">(월주 간이는 절입일 영향으로 실제와 다를 수 있습니다.)</span></p>
         <p><strong>일주 (일):</strong> ${dayGan}${dayJi} (일간: ${dayGan} - ${elements[dayGan]}오행) <span class="note">(일주 간지는 일진력 기준이므로 실제와 다를 수 있습니다.)</span></p>
         <p><strong>시주 (시):</strong> ${hourGan}${hourJi}</p>
       </div>
