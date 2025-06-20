@@ -1,4 +1,27 @@
 
+// Define helper functions first
+function getSajuPillars(year, month, day, hour, minute) {
+  return {
+    year: "을축",
+    month: "병인",
+    day: "기묘",
+    dayStem: "기",
+    elementCount: [2, 1, 2, 2, 1], // 목, 화, 토, 금, 수
+    personality: "침착하고 논리적인 성향을 가짐",
+    summary: "총체적으로 안정된 운세이나 후반기 귀인 도움 예상"
+  };
+}
+
+function getHourPillarByTime(dayStem, hour, minute) {
+  const hourIndex = Math.floor(((hour * 60) + minute) / 120) % 12;
+  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+  const stems = ['갑','을','병','정','무','기','경','신','임','계'];
+  const baseIndex = stems.indexOf(dayStem);
+  const stem = stems[(baseIndex + hourIndex) % 10];
+  return `${stem}${branches[hourIndex]}`;
+}
+
+// Then define event listener
 document.getElementById('saju-form').addEventListener('submit', function (e) {
   e.preventDefault();
   const year = parseInt(document.getElementById('year').value);
@@ -46,27 +69,3 @@ document.getElementById('saju-form').addEventListener('submit', function (e) {
     resultDiv.innerHTML = `<p style="color:red;"><strong>❗ 오류:</strong> ${err.message || '사주 계산에 실패했습니다. 입력값을 확인해주세요.'}</p>`;
   }
 });
-
-// Placeholder example functions (to be filled in real logic as needed)
-function getSajuPillars(year, month, day, hour, minute) {
-  // Dummy logic (return mock for now)
-  return {
-    year: "을축",
-    month: "병인",
-    day: "기묘",
-    dayStem: "기",
-    elementCount: [2, 1, 2, 2, 1], // 목, 화, 토, 금, 수
-    personality: "침착하고 논리적인 성향을 가짐",
-    summary: "총체적으로 안정된 운세이나 후반기 귀인 도움 예상"
-  };
-}
-
-function getHourPillarByTime(dayStem, hour, minute) {
-  // Mock logic: hour+minute determines branch, combine with fixed stem
-  const hourIndex = Math.floor(((hour * 60) + minute) / 120) % 12;
-  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
-  const stems = ['갑','을','병','정','무','기','경','신','임','계'];
-  const baseIndex = stems.indexOf(dayStem);
-  const stem = stems[(baseIndex + hourIndex) % 10];
-  return `${stem}${branches[hourIndex]}`;
-}
