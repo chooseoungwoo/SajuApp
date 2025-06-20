@@ -5,16 +5,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>사주 통합 분석</title>
   <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>사주 통합 분석</h1>
+    <p class="description">생년월일시를 입력하여 사주 기본 정보를 확인하세요.<br>
+      ※ 월주와 일주는 정확한 절입일 및 일진 계산이 필요하며, 현재는 간이 계산법이 적용되어 정확하지 않을 수 있습니다.</p>
     <label for="birthDate">생년월일 입력 (yyyyMMdd):</label>
-    <input type="text" id="birthDate" placeholder="예: 19850209" />
+    <input type="text" id="birthDate" placeholder="예: 19850209" maxlength="8"/>
     <label for="birthTime">출생 시각 입력 (HH:mm):</label>
     <input type="time" id="birthTime" />
     <button id="submitBtn">사주 보기</button>
     <div id="result"></div>
+
+    <div class="card" id="sixtyYearCycleGraphContainer">
+      <h3>⏳ 육십갑자 주기 그래프</h3>
+      <canvas id="sixtyYearCycleChart"></canvas>
+    </div>
   </div>
   <script src="script.js"></script>
 </body>
