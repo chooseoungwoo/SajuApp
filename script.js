@@ -1,21 +1,10 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const inputGroup = document.querySelector('.input-group');
-
-    // 출생시각 필드 추가
-    const timeGroup = document.createElement('div');
-    timeGroup.className = 'input-group';
-    timeGroup.innerHTML = \`
-        <label for="birthTime">출생 시각 입력 (HH:mm):</label>
-        <input type="time" id="birthTime" required>
-    \`;
-    inputGroup.after(timeGroup);
-});
-
 document.getElementById('submitBtn').addEventListener('click', function () {
     const birthDate = document.getElementById('birthDate').value.trim();
     const birthTime = document.getElementById('birthTime').value.trim();
     const resultDiv = document.getElementById('result');
+    const chartEl = document.getElementById('luckChart');
     resultDiv.innerHTML = '';
+    chartEl.style.display = 'none';
 
     if (!/^\d{8}$/.test(birthDate)) {
         alert("생년월일을 yyyyMMdd 형식으로 입력해주세요.");
@@ -32,7 +21,6 @@ document.getElementById('submitBtn').addEventListener('click', function () {
     const day = parseInt(birthDate.slice(6, 8));
     const hour = parseInt(birthTime.split(':')[0]);
 
-    // 입춘 기준 적용
     const adjustedYear = (month < 2 || (month === 2 && day < 4)) ? year - 1 : year;
     const gan = ['갑','을','병','정','무','기','경','신','임','계'];
     const ji = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
@@ -52,21 +40,64 @@ document.getElementById('submitBtn').addEventListener('click', function () {
 
     let chartHTML = "<h3>🌿 오행 구성 (간략)</h3><ul>";
     for (const key in count) {
-        chartHTML += \`<li>\${key}: \${count[key]}개</li>\`;
+        chartHTML += `<li>${key}: ${count[key]}개</li>`;
     }
     chartHTML += "</ul>";
 
-    resultDiv.innerHTML = \`
+    resultDiv.innerHTML = `
         <div class="card">
             <h3>📌 사주팔자 (간지 기준)</h3>
-            <p><strong>연주:</strong> \${yearGanji}</p>
-            <p><strong>시주:</strong> \${hourGanji}</p>
-            <p><strong>일간:</strong> \${dayStem} (\${elements[dayStem]}오행)</p>
+            <p><strong>연주:</strong> ${yearGanji}</p>
+            <p><strong>시주:</strong> ${hourGanji}</p>
+            <p><strong>일간:</strong> ${dayStem} (${elements[dayStem]}오행)</p>
         </div>
-        \${chartHTML}
-        <div class="card">
-            <h3>📈 60년 대운 시각화 (예정)</h3>
-            <p style='color:gray;'>※ 이 부분은 다음 단계에서 그래프 포함 예정</p>
-        </div>
-    \`;
+        ${chartHTML}
+    `;
+
+    chartEl.style.display = 'block';
+    renderLuckChart();
 });
+
+function renderLuckChart() {
+    const ctx = document.getElementById('luckChart').getContext('2d');
+    if (window.luckChart) window.luckChart.destroy();
+    window.luckChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: ['10세', '20세', '30세', '40세', '50세', '60세', '70세', '80세'],
+            datasets: [{
+                label: '운세 점수',
+                data: [55, 60, 72, 65, 50, 58, 62, 75],
+                backgroundColor: 'rgba(0, 123, 255, 0.2)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 2,
+                pointBackgroundColor: 'rgba(0,123,255,1)',
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    min: 0,
+                    max: 100,
+                    title: {
+                        display: true,
+                        text: '운세 점수'
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: '나이'
+                    }
+                }
+            },
+            responsive: true,
+            plugins: {
+                legend: { display: false },
+                tooltip: { mode: 'index', intersect: false }
+            }
+        }
+    });
+}

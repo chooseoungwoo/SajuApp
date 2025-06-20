@@ -1,22 +1,27 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>사주 앱</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>정통 사주 통합 앱</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
     <div class="container">
-        <h1>사주 앱</h1>
+        <h1>사주 통합 분석</h1>
         <div class="input-group">
             <label for="birthDate">생년월일 입력 (yyyyMMdd):</label>
-            <input type="text" id="birthDate" placeholder="예: 19901215">
+            <input type="text" id="birthDate" placeholder="예: 19850209" />
+        </div>
+        <div class="input-group">
+            <label for="birthTime">출생 시각 입력 (HH:mm):</label>
+            <input type="time" id="birthTime" required />
         </div>
         <button id="submitBtn">사주 보기</button>
         <div id="result"></div>
+        <canvas id="luckChart" style="margin-top:30px;"></canvas>
     </div>
-
     <script src="script.js"></script>
 </body>
 </html>
