@@ -1,7 +1,7 @@
 
 function getGanjiIndexByNumber(n) {
   const stems = ['갑','을','병','정','무','기','경','신','임','계'];
-  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+  const branches = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
   return stems[n % 10] + branches[n % 12];
 }
 
@@ -20,7 +20,7 @@ const SOLAR_TERM_CUTOFF = [
 
 function getMonthGanjiBySolarTerm(year, month, day, yearStem) {
   const stems = ['갑','을','병','정','무','기','경','신','임','계'];
-  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+  const branches = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
 
   const yearStemIndex = stems.indexOf(yearStem);
   const monthStemStartIndex = (yearStemIndex * 2 + 2) % 10;
@@ -40,7 +40,7 @@ function getMonthGanjiBySolarTerm(year, month, day, yearStem) {
 
 function getSajuPillars(year, month, day, hour, minute) {
   const stems = ['갑','을','병','정','무','기','경','신','임','계'];
-  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+  const branches = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
 
   const yearOffset = year - 1984;
   const yearStem = stems[(0 + yearOffset) % 10];
@@ -64,10 +64,9 @@ function getSajuPillars(year, month, day, hour, minute) {
   };
 }
 
-// 정확한 시주 계산
 function getHourPillarByTime(dayStem, hour, minute) {
   const stems = ['갑','을','병','정','무','기','경','신','임','계'];
-  const branches = ['자','축','인','묯','진','사','오','미','신','유','술','해'];
+  const branches = ['자','축','인','묘','진','사','오','미','신','유','술','해'];
 
   const dayStemIndexTable = {
     '갑': 0, '을': 2, '병': 4, '정': 6, '무': 8,
@@ -79,9 +78,10 @@ function getHourPillarByTime(dayStem, hour, minute) {
     [11, 12], [13, 14], [15, 16], [17, 18], [19, 20], [21, 22]
   ];
 
+  const t = hour;
   const hourIndex = timeRanges.findIndex(([start, end]) => {
-    const t = hour;
-    return t === start || (t >= start && t < end);
+    return (start <= end && t >= start && t < end) ||
+           (start > end && (t >= start || t < end)); // for 자시 (23:00 ~ 00:59)
   });
 
   const branch = branches[hourIndex];
