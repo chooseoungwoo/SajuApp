@@ -1,22 +1,52 @@
 
-body {
-  font-family: 'Segoe UI', sans-serif;
-  background: url('https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0') no-repeat center center fixed;
-  background-size: cover;
-  color: white;
-  text-align: center;
-  padding: 40px;
+:root{
+  --bg-blur: rgba(255,255,255,0.78);
+  --primary: #4338ca;
+  --accent: #06b6d4;
 }
-input {
-  margin: 5px;
-  padding: 6px;
-  border-radius: 5px;
+*{box-sizing:border-box}
+body{
+  font-family:'Noto Sans KR',sans-serif;
+  margin:0;
+  min-height:100vh;
+  color:#111;
+  background: url('background.jpg') no-repeat center/cover fixed;
 }
-button {
-  padding: 10px 20px;
-  margin-top: 10px;
-  font-weight: bold;
+.container{
+  max-width: 900px;
+  margin: 48px auto;
+  padding: 0 16px;
 }
-canvas {
-  margin-top: 30px;
+h1{ text-align:center; color:#1e293b; margin-bottom:18px; }
+.card{
+  background: var(--bg-blur);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+  margin-bottom: 16px;
+}
+label{ display:block; font-weight:600; margin-bottom:6px; }
+input, select{
+  width:100%; padding:12px; border:1px solid #cbd5e1; border-radius:10px;
+}
+button#compute{
+  width:100%; margin-top:12px; padding:14px 16px;
+  color:#fff; font-weight:700; border:0; border-radius:12px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  cursor:pointer;
+}
+.error{ color:#b91c1c; background:#fee2e2; border-left:4px solid #ef4444; padding:10px 12px; border-radius:8px; }
+.grid2{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+.hint{ color:#334155; font-size:.92rem; padding-top:24px;}
+.pillars{ display:grid; grid-template-columns: repeat(4, 1fr); gap:10px; margin:12px 0 6px; }
+.pillar{ background:#fff; border-radius:12px; padding:12px; text-align:center; border-left:6px solid #6366f1; }
+.gz{ font-size:1.6rem; font-weight:700; margin-top:6px; color:#0f172a;}
+.elements{ list-style:none; padding:0; display:grid; grid-template-columns: repeat(5, 1fr); gap:8px; }
+.elements li{ background:#fff; border-radius:10px; padding:10px; text-align:center; border:1px dashed #c7d2fe; }
+.notes{ margin-top:12px; color:#334155; font-size:.95rem;}
+footer{ text-align:center; color:#334155; margin-top:14px;}
+@media (max-width:700px){
+  .grid2{ grid-template-columns:1fr; }
+  .elements{ grid-template-columns: repeat(2, 1fr); }
 }

@@ -1,24 +1,61 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>정통 사주풀이</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>정통 사주 계산기 (Client-Only)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>정통 사주 통합 분석</h1>
-  <form id="saju-form">
-    <label>출생연도: <input type="number" id="year" required></label><br>
-    <label>출생월: <input type="number" id="month" required></label><br>
-    <label>출생일: <input type="number" id="day" required></label><br>
-    <label>출생시 (0~23): <input type="number" id="hour" required></label><br>
-    <label>출생분 (0~59): <input type="number" id="minute" required></label><br>
-    <button type="submit">사주 보기</button>
-  </form>
-  <div id="result" style="margin-top:20px;"></div>
-  <canvas id="fortuneGraph" width="400" height="200"></canvas>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="script.v2.js"></script>
+  <div class="container">
+    <h1>🔮 정통 사주 계산기 (양력·절기 기반)</h1>
+
+    <div class="card">
+      <div class="grid2">
+        <div>
+          <label>생년월일 (YYYY-MM-DD)</label>
+          <input id="birthdate" type="date" />
+        </div>
+        <div>
+          <label>출생 시각 (HH:MM)</label>
+          <input id="birthtime" type="time" />
+        </div>
+      </div>
+      <div class="grid2">
+        <div>
+          <label>시간대</label>
+          <select id="tz">
+            <option value="9" selected>한국 표준시 (UTC+9)</option>
+            <option value="0">UTC (세계 협정시)</option>
+          </select>
+        </div>
+        <div class="hint">
+          ※ 시각을 모르면 <b>계산 불가</b>합니다. (정통 기준)        </div>
+      </div>
+      <button id="compute">사주 계산</button>
+      <div id="error" class="error" style="display:none;"></div>
+    </div>
+
+    <div id="result" class="card" style="display:none;">
+      <h2>📌 사주팔자</h2>
+      <div class="pillars">
+        <div class="pillar"><div>연주</div><div id="y_gz" class="gz"></div></div>
+        <div class="pillar"><div>월주</div><div id="m_gz" class="gz"></div></div>
+        <div class="pillar"><div>일주</div><div id="d_gz" class="gz"></div></div>
+        <div class="pillar"><div>시주</div><div id="h_gz" class="gz"></div></div>
+      </div>
+
+      <h3>🌿 오행 구성</h3>
+      <ul id="elements" class="elements"></ul>
+
+      <div id="notes" class="notes"></div>
+    </div>
+
+    <footer>
+      <small>ⓒ Client-only Saju Calculator. 60갑자 원리: 연은 立春(2/4) 기준, 월은 절기 경계(간이), 일은 1984-02-02 甲子 기준, 시는 일간 기반 계산.</small>
+    </footer>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
