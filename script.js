@@ -1,31 +1,50 @@
 
 (function(){
-  // ========= util: safe selector =========
   function $(sel, root=document){ return root.querySelector(sel); }
   function $all(sel, root=document){ return Array.from(root.querySelectorAll(sel)); }
-  function findButtonByText(txt){
+  function findButton(){
     const btns = $all('button, input[type="button"], input[type="submit"]');
-    return btns.find(b => (b.textContent||b.value||'').trim().includes(txt));
+    const cand = btns.find(b => ((b.textContent||b.value||'').replace(/\s+/g,'').includes('사주보기')));
+    return cand || btns[0] || null;
+  }
+  function findInputByLabel(keyword){
+    const labels = $all('label');
+    for (const lb of labels){
+      if ((lb.textContent||'').includes(keyword)){
+        const forId = lb.getAttribute('for');
+        if (forId){
+          const el = document.getElementById(forId);
+          if (el) return el;
+        }
+        const el = lb.parentElement.querySelector('input');
+        if (el) return el;
+      }
+    }
+    return null;
+  }
+  function findDateInput(){
+    return $('input[type="date"]')
+        || findInputByLabel('생년월일')
+        || $all('input').find(i => /yyyymmdd|yyyyMM?dd/i.test(i.placeholder||''))
+        || $all('input')[0];
+  }
+  function findTimeInput(){
+    return $('input[type="time"]')
+        || findInputByLabel('출생 시각')
+        || $all('input').find(i => /(HH:?\s?mm|hh:?\s?mm)/i.test(i.placeholder||''))
+        || $all('input')[1];
   }
 
-  // ========= stems/branches, elements =========
   const stems = ["갑","을","병","정","무","기","경","신","임","계"];
   const branches = ["자","축","인","묘","진","사","오","미","신","유","술","해"];
   const stemElem = {"갑":"목","을":"목","병":"화","정":"화","무":"토","기":"토","경":"금","신":"금","임":"수","계":"수"};
   const branchElem = {"자":"수","축":"토","인":"목","묘":"목","진":"토","사":"화","오":"화","미":"토","신":"금","유":"금","술":"토","해":"수"};
 
-  // ========= JD helpers =========
   function toJulianDay(y,m,d){
     const a = Math.floor((14-m)/12);
     const y2 = y + 4800 - a;
     const m2 = m + 12*a - 3;
     return d + Math.floor((153*m2+2)/5) + 365*y2 + Math.floor(y2/4) - Math.floor(y2/100) + Math.floor(y2/400) - 32045;
-  }
-  function jdFromDateUTC(dt){
-    const y = dt.getUTCFullYear(), m = dt.getUTCMonth()+1, d = dt.getUTCDate();
-    const h = dt.getUTCHours(), min = dt.getUTCMinutes(), s = dt.getUTCSeconds() + dt.getUTCMilliseconds()/1000;
-    const JD0 = toJulianDay(y,m,d);
-    return JD0 + (h + (min + s/60)/60)/24;
   }
   function dateFromJD(jd){
     const Z = Math.floor(jd + 0.5);
@@ -50,8 +69,6 @@
     const ms = Math.round((frac*60 - seconds)*1000);
     return new Date(Date.UTC(year, month-1, dayInt, hours, minutes, seconds, ms));
   }
-
-  // ========= Sun ecliptic longitude (approx) =========
   function sunEclipticLongitude(jd){
     const T = (jd - 2451545.0)/36525.0;
     const L0 = (280.46646 + 36000.76983*T + 0.0003032*T*T) % 360;
@@ -88,7 +105,6 @@
   }
   function solarTermsForYear(yearUTC){ const arr=[]; for(let i=0;i<24;i++){ arr.push(dateFromJD(findTermTimeJD(yearUTC,i))); } return arr; }
 
-  // ========= Pillars =========
   function yearPillarByLichun(local, tzHours){
     const yUTC = local.getUTCFullYear();
     const lichunUTC = solarTermsForYear(yUTC)[2];
@@ -100,22 +116,16 @@
   }
   function monthBySolarTerms(local, tzHours){
     const yUTC = local.getUTCFullYear();
-    const termsUTC = solarTermsForYear(yUTC);
-    const termsLocal = termsUTC.map(dt => new Date(dt.getTime() + tzHours*3600*1000));
+    const termsLocal = solarTermsForYear(yUTC).map(dt => new Date(dt.getTime() + tzHours*3600*1000));
     const nextTermsLocal = solarTermsForYear(yUTC+1).map(dt => new Date(dt.getTime() + tzHours*3600*1000));
     const jeolIdxs = [2,4,6,8,10,12,14,16,18,20,22,0];
     const jeolTimes = jeolIdxs.map(i => i===0 ? nextTermsLocal[0] : termsLocal[i]);
     const monthBranches = ["인","묘","진","사","오","미","신","유","술","해","자","축"];
     let mIndex = 12;
     for (let i=0;i<jeolTimes.length;i++){
-      const cur = jeolTimes[i];
-      const nxt = jeolTimes[(i+1)%jeolTimes.length];
-      if (i<jeolTimes.length-1){
-        if (local >= cur && local < nxt){ mIndex = i+1; break; }
-      } else {
-        const first = jeolTimes[0];
-        if (local >= cur || local < first){ mIndex = 12; }
-      }
+      const cur = jeolTimes[i], nxt = jeolTimes[(i+1)%jeolTimes.length];
+      if (i<jeolTimes.length-1){ if (local >= cur && local < nxt){ mIndex = i+1; break; } }
+      else { const first = jeolTimes[0]; if (local >= cur || local < first){ mIndex = 12; } }
     }
     const mBranch = monthBranches[(mIndex-1)%12];
     const [yStem] = yearPillarByLichun(local, tzHours);
@@ -128,7 +138,7 @@
   }
   function dayPillar(local){
     const jd = toJulianDay(local.getFullYear(), local.getMonth()+1, local.getDate());
-    const jdRef = toJulianDay(1984,2,2); // 甲子일
+    const jdRef = toJulianDay(1984,2,2);
     const diff = jd - jdRef;
     const stem = stems[(diff % 10 + 10) % 10];
     const branch = branches[(diff % 12 + 12) % 12];
@@ -144,106 +154,88 @@
     const hbIdx = ["자","축","인","묘","진","사","오","미","신","유","술","해"].indexOf(hBranch);
     return stems[((dIdx % 5) * 2 + hbIdx) % 10];
   }
-  function countElements(gzList){
-    const counts = {"목":0,"화":0,"토":0,"금":0,"수":0};
-    gzList.forEach(([g,z])=>{
-      counts[stemElem[g]] += 1;
-      counts[branchElem[z]] += 1;
-    });
-    return counts;
+  function countsOf(list){
+    const c={"목":0,"화":0,"토":0,"금":0,"수":0};
+    list.forEach(([g,z])=>{ c[stemElem[g]]++; c[branchElem[z]]++; });
+    return c;
   }
 
-  // ========= Bind UI generically =========
-  function detectInputs(){
-    // date: prefer [type=date], else placeholder yyyymmdd, else first input
-    let dateEl = $('input[type="date"]') || $all('input').find(i => /yyyy?[-/ ]?mm[-/ ]?dd|yyyymmdd|예:\s*1985/i.test(i.placeholder||''));
-    if (!dateEl) dateEl = $all('input')[0];
-    // time: prefer [type=time], else placeholder HH:mm, else second input
-    let timeEl = $('input[type="time"]') || $all('input').find(i => /(hh:?\s?mm|HH:?\s?mm)/i.test(i.placeholder||''));
-    if (!timeEl) timeEl = $all('input')[1];
-    // button
-    let btn = findButtonByText('사주 보기') || findButtonByText('보기') || $('button');
-    return {dateEl, timeEl, btn};
-  }
   function ensureResultBox(){
     let box = document.getElementById('saju-result-box');
     if (!box){
       box = document.createElement('div');
-      box.id = 'saju-result-box';
-      box.style.marginTop = '16px';
-      box.style.padding = '16px';
-      box.style.borderRadius = '12px';
-      box.style.background = 'rgba(255,255,255,0.86)';
-      box.style.border = '1px solid #dbeafe';
-      document.body.appendChild(box);
+      box.id='saju-result-box';
+      box.style.marginTop='16px'; box.style.padding='16px'; box.style.border='1px solid #dbeafe';
+      box.style.borderRadius='12px'; box.style.background='rgba(255,255,255,.9)';
+      const form = document.querySelector('.card') || document.body;
+      form.parentNode.insertBefore(box, form.nextSibling);
     }
     return box;
   }
-  function renderResult(box, data){
-    const {yG,yZ,mG,mZ,dG,dZ,hG,hZ,counts} = data;
+  function render(box, yG,yZ,mG,mZ,dG,dZ,hG,hZ,c){
     box.innerHTML = `
-      <h3 style="margin:0 0 8px 0">📌 사주 결과</h3>
-      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
-        <div><b>연주</b><div>${yG}${yZ} (${stemElem[yG]}/${branchElem[yZ]})</div></div>
-        <div><b>월주</b><div>${mG}${mZ} (${stemElem[mG]}/${branchElem[mZ]})</div></div>
-        <div><b>일주</b><div>${dG}${dZ} (${stemElem[dG]}/${branchElem[dZ]})</div></div>
-        <div><b>시주</b><div>${hG}${hZ} (${stemElem[hG]}/${branchElem[hZ]})</div></div>
-      </div>
-      <h4 style="margin:12px 0 6px">🌿 오행 구성</h4>
-      <div>목:${counts["목"]} · 화:${counts["화"]} · 토:${counts["토"]} · 금:${counts["금"]} · 수:${counts["수"]}</div>
-      <div style="margin-top:8px;color:#334155;font-size:.92rem;">※ 연·월주는 24절기 <u>천문 절입시각</u> 기준, 일주는 1984-02-02 甲子일 기준, 시주는 자시 체계를 적용했습니다.</div>
-    `;
+    <h3 style="margin:0 0 8px">📌 사주 결과</h3>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+      <div><b>연주</b><div>${yG}${yZ} (${stemElem[yG]}/${branchElem[yZ]})</div></div>
+      <div><b>월주</b><div>${mG}${mZ} (${stemElem[mG]}/${branchElem[mZ]})</div></div>
+      <div><b>일주</b><div>${dG}${dZ} (${stemElem[dG]}/${branchElem[dZ]})</div></div>
+      <div><b>시주</b><div>${hG}${hZ} (${stemElem[hG]}/${branchElem[hZ]})</div></div>
+    </div>
+    <div style="margin-top:10px">🌿 오행: 목 ${c["목"]} · 화 ${c["화"]} · 토 ${c["토"]} · 금 ${c["금"]} · 수 ${c["수"]}</div>
+    <div style="margin-top:8px;color:#334155;font-size:.9rem">※ 연·월주: 24절기 <u>천문 절입시각</u>, 일주: 1984-02-02 甲子, 시주: 자시 체계</div>`;
   }
-  function parseYyyymmdd(val){
-    const s = (val||'').replace(/\D/g,'');
-    if (s.length===8){
-      return {Y:+s.slice(0,4), M:+s.slice(4,6), D:+s.slice(6,8)};
+
+  function parseDateInput(el){
+    if (!el) return null;
+    if (el.type === 'date' && el.value){
+      const d = new Date(el.value);
+      return {Y:d.getFullYear(), M:d.getMonth()+1, D:d.getDate()};
     }
+    const s = (el.value||'').replace(/\D/g,'');
+    if (s.length===8) return {Y:+s.slice(0,4), M:+s.slice(4,6), D:+s.slice(6,8)};
     return null;
   }
+  function parseTimeInput(el){
+    if (!el) return null;
+    let v = (el.value||'').trim();
+    if (!v) return null;
+    let pm = /오후|PM/i.test(v);
+    let am = /오전|AM/i.test(v);
+    v = v.replace(/오전|오후|AM|PM/ig,'').trim();
+    const m = v.match(/(\d{1,2})\D(\d{1,2})/);
+    if (!m) return null;
+    let h = +m[1], mm = +m[2];
+    if (pm && h < 12) h += 12;
+    if (am && h === 12) h = 0;
+    return {H:h, M:mm};
+  }
 
-  function onCompute(){
-    const {dateEl, timeEl} = detectInputs();
-    const valDate = dateEl?.value || dateEl?.valueAsDate ? null : null;
-    let YMD = null;
-    if (dateEl && dateEl.type==='date' && dateEl.value){
-      const d = new Date(dateEl.value);
-      YMD = {Y:d.getFullYear(), M:d.getMonth()+1, D:d.getDate()};
-    } else if (dateEl){
-      YMD = parseYyyymmdd(dateEl.value);
-    }
-    if (!YMD){ alert('생년월일을 yyyymmdd 또는 date 필드로 입력해주세요.'); return; }
-
-    let HH=0, MM=0;
-    if (timeEl && timeEl.type==='time' && timeEl.value){
-      const [h,m]=timeEl.value.split(':'); HH=+h; MM=+m;
-    } else if (timeEl && timeEl.value){
-      const m = timeEl.value.match(/(\d{1,2})\D(\d{1,2})/);
-      if (m){ HH=+m[1]; MM=+m[2]; } else { alert('출생 시각은 HH:mm 형식으로 입력해주세요.'); return; }
-    } else { alert('출생 시각은 HH:mm 형식으로 입력해주세요.'); return; }
-
-    // Assume KST (UTC+9) if not specified elsewhere
+  function compute(){
+    const dateEl = findDateInput();
+    const timeEl = findTimeInput();
+    const ymd = parseDateInput(dateEl);
+    const hm = parseTimeInput(timeEl);
+    if (!ymd){ alert('생년월일을 yyyyMMdd 또는 date로 입력해주세요.'); return; }
+    if (!hm){ alert('출생 시각을 HH:mm 형식으로 입력해주세요.'); return; }
     const tzHours = 9;
-    // construct UTC date from KST components
-    const dtUTC = new Date(Date.UTC(YMD.Y, YMD.M-1, YMD.D, HH - tzHours, MM, 0));
+    const dtUTC = new Date(Date.UTC(ymd.Y, ymd.M-1, ymd.D, hm.H - tzHours, hm.M, 0));
     const local = new Date(dtUTC.getTime() + tzHours*3600*1000);
-
     const [yG,yZ] = yearPillarByLichun(local, tzHours);
     const [mG,mZ] = monthBySolarTerms(local, tzHours);
     const [dG,dZ] = dayPillar(local);
     const hZ = hourBranchByLocalHour(local.getHours());
     const hG = hourStem(dG, hZ);
-    const counts = (function(gz){ const c={"목":0,"화":0,"토":0,"금":0,"수":0}; gz.forEach(([g,z])=>{ c[stemElem[g]]++; c[branchElem[z]]++;}); return c;})([[yG,yZ],[mG,mZ],[dG,dZ],[hG,hZ]]);
-
-    renderResult(ensureResultBox(), {yG,yZ,mG,mZ,dG,dZ,hG,hZ,counts});
+    const c = countsOf([[yG,yZ],[mG,mZ],[dG,dZ],[hG,hZ]]);
+    render(ensureResultBox(), yG,yZ,mG,mZ,dG,dZ,hG,hZ,c);
   }
 
-  document.addEventListener('DOMContentLoaded', ()=>{
-    const {btn} = detectInputs();
-    if (btn){
-      btn.addEventListener('click', (e)=>{ e.preventDefault(); onCompute(); });
-    } else {
-      console.warn('사주 보기 버튼을 찾지 못했습니다. 버튼 텍스트를 "사주 보기"로 해주세요.');
-    }
-  });
+  function bind(){
+    const btn = findButton();
+    if (btn){ btn.addEventListener('click', (e)=>{ e.preventDefault(); compute(); }); }
+    [findDateInput(), findTimeInput()].forEach(el=>{
+      if (el){ el.addEventListener('keydown', (e)=>{ if (e.key==='Enter'){ e.preventDefault(); compute(); } }); }
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', bind);
 })();
