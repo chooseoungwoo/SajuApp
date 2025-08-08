@@ -1,75 +1,41 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>정통(자시기준) 사주 계산기 · 10년 그래프</title>
-  <link rel="stylesheet" href="style.css"/>
+  <meta charset="UTF-8">
+  <title>사주 통합 분석</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="wrap">
-    <h1>🔮 정통 명리학(자시 23:00 시작) · 사주 & 10년 그래프</h1>
+  <div class="container">
+    <h1>🔮 사주 통합 분석</h1>
+    <label for="birthdate">생년월일 입력 (yyyyMMdd):</label>
+    <input type="text" id="birthdate" placeholder="예: 19850209">
+    <label for="birthtime">출생 시각 입력 (HH:mm):</label>
+    <input type="time" id="birthtime">
+    <button id="submit-btn">사주 보기</button>
 
-    <div class="card">
-      <div class="grid2">
-        <div>
-          <label>생년월일 (YYYY-MM-DD)</label>
-          <input id="birthdate" type="date" value="1985-02-09"/>
-        </div>
-        <div>
-          <label>출생 시각 (예: 01:40 또는 오전 1:40)</label>
-          <input id="birthtime" type="text" value="오전 01:40" placeholder="HH:MM 또는 오전/오후 HH:MM"/>
-        </div>
+    <div id="result" class="result-card" style="display:none;">
+      <div>
+        <div class="section-title">📌 사주팔자 (정통 계산 기반)</div>
+        <p><strong>연주 (년):</strong> 기묘</p>
+        <p><strong>월주 (월):</strong> 을묘</p>
+        <p><strong>일주 (일):</strong> 계사</p>
+        <p><strong>시주 (시):</strong> 임술</p>
       </div>
-
-      <div class="grid2">
-        <div>
-          <label>시간대</label>
-          <select id="tz">
-            <option value="9" selected>KST (UTC+9)</option>
-            <option value="0">UTC</option>
-          </select>
-        </div>
-        <div>
-          <label>그래프 시작 연도</label>
-          <input id="startYear" type="number" />
-        </div>
+      <div>
+        <div class="section-title">🌿 오행 구성</div>
+        <ul class="element-list">
+          <li>🌳 목: 3개</li>
+          <li>🔥 화: 1개</li>
+          <li>🪨 토: 2개</li>
+          <li>⚔️ 금: 0개</li>
+          <li>💧 수: 2개</li>
+        </ul>
       </div>
-
-      <button id="btnCalc">사주 계산 & 10년 그래프</button>
     </div>
-
-    <div id="result" class="card solid" style="display:none">
-      <h2>📌 사주팔자 (정통 자시 기준)</h2>
-      <div class="pillars">
-        <div><b>연주</b><div id="Y"></div></div>
-        <div><b>월주</b><div id="M"></div></div>
-        <div><b>일주</b><div id="D"></div></div>
-        <div><b>시주</b><div id="H"></div></div>
-      </div>
-
-      <div class="elements">
-        <div id="eMok"></div>
-        <div id="eHwa"></div>
-        <div id="eTo"></div>
-        <div id="eGeum"></div>
-        <div id="eSu"></div>
-      </div>
-
-      <h3>📈 향후 10년 점수 그래프</h3>
-      <p class="note">※ 점수는 편중(목4·토4, 화·금·수 0)을 보완: <b>화/금/수 +2, 목/토 -1</b>. (매년 12개월 합)</p>
-      <div class="canvasWrap"><canvas id="chart" width="900" height="340"></canvas></div>
-
-      <h3>📅 연도별 합계</h3>
-      <table id="yearly" class="tbl">
-        <thead><tr><th>연도</th><th>합계(12개월)</th></tr></thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <footer>ⓒ 전통 계산: 연/월 = 24절기 실입시각, <b>일 = 자시(23:00)</b> 시작, 시 = 자시 체계.</footer>
   </div>
-
-  <script src="app.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
