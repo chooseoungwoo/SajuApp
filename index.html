@@ -9,6 +9,7 @@
 <body>
   <div class="wrap">
     <h1>🔮 정통 명리학(자시 23:00 시작) · 사주 & 10년 그래프</h1>
+
     <div class="card">
       <div class="grid2">
         <div>
@@ -16,10 +17,11 @@
           <input id="birthdate" type="date" value="1985-02-09"/>
         </div>
         <div>
-          <label>출생 시각 (HH:MM, 24h)</label>
-          <input id="birthtime" type="time" value="01:40"/>
+          <label>출생 시각 (예: 01:40 또는 오전 1:40)</label>
+          <input id="birthtime" type="text" value="오전 01:40" placeholder="HH:MM 또는 오전/오후 HH:MM"/>
         </div>
       </div>
+
       <div class="grid2">
         <div>
           <label>시간대</label>
@@ -33,10 +35,11 @@
           <input id="startYear" type="number" />
         </div>
       </div>
+
       <button id="btnCalc">사주 계산 & 10년 그래프</button>
     </div>
 
-    <div id="result" class="card" style="display:none">
+    <div id="result" class="card solid" style="display:none">
       <h2>📌 사주팔자 (정통 자시 기준)</h2>
       <div class="pillars">
         <div><b>연주</b><div id="Y"></div></div>
@@ -44,6 +47,7 @@
         <div><b>일주</b><div id="D"></div></div>
         <div><b>시주</b><div id="H"></div></div>
       </div>
+
       <div class="elements">
         <div id="eMok"></div>
         <div id="eHwa"></div>
@@ -53,8 +57,8 @@
       </div>
 
       <h3>📈 향후 10년 점수 그래프</h3>
-      <p class="note">※ 점수는 사주 편중(목4·토4, 화/금/수 0)을 보완하는 가중치를 적용합니다. (화/금/수 +2, 목/토 -1) · 매년 12개월 점수 합계</p>
-      <canvas id="chart" width="900" height="340"></canvas>
+      <p class="note">※ 점수는 편중(목4·토4, 화·금·수 0)을 보완: <b>화/금/수 +2, 목/토 -1</b>. (매년 12개월 합)</p>
+      <div class="canvasWrap"><canvas id="chart" width="900" height="340"></canvas></div>
 
       <h3>📅 연도별 합계</h3>
       <table id="yearly" class="tbl">
